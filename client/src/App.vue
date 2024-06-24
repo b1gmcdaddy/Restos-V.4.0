@@ -1,14 +1,24 @@
 <template>
   <div class="background-container">
     <Banner />
-    <div class="md:flex flex-row mx-auto w-[80%]">
+    <div class="md:flex flex-row mx-auto w-[80%] ">
       <!-- FORM TO ADD RESTOS -->
       <AddRestoForm />
 
-      <div class="bg-white md:flex mt-5 basis-2/3 max-h-[40vh] overflow-y-auto">
+      <div class="bg-white mt-3 basis-2/3 max-h-[60vh] overflow-y-auto rounded-md">
+        
+        <div class="flex items-center justify-between mx-6 my-3">
+          <h2 class="text-xl font-bold font-[tahoma]">
+              {{ showVisitedRestos ? 'Visited' : 'Restos To Go' }}
+          </h2>
+          <select @change="handleSelectChange" class="border-[1.5px] p-2 shadow-md hover:bg-neutral-50">
+            <option value="notVisited">Restos To Go</option>
+            <option value="visited">Visited</option>
+          </select>
+         </div>
         <!------ List of VISITED Restos  ------>
         <ul v-if="showVisitedRestos">
-          <li v-for="resto in visitedRestos" :key="resto.id" class="p-2">
+          <li v-for="resto in visitedRestos" :key="resto.id" class="shadow-xl flex flex-col p-6 my-2 mx-6 rounded-lg">
             <h2 class="font-bold">{{ resto.resto }}</h2>
             <p>{{ resto.description }}</p>
             <p>Type: {{ resto.type }}</p>
@@ -19,18 +29,22 @@
         </ul>
         <!------ List of NOT Visited Restos  ------>
         <ul v-else>
-          <li v-for="resto in notVisitedRestos" :key="resto.id" class="p-2">
-            <h2 class="font-bold">{{ resto.resto }}</h2>
+          <li v-for="resto in notVisitedRestos" :key="resto.id" class="shadow-xl flex flex-col p-6 my-2 mx-6 rounded-lg">
+  
+            <h2 class="font-bold text-xl">{{ resto.resto }}</h2>
             <p>{{ resto.description }}</p>
             <p>Type: {{ resto.type }}</p>
             <p>Status: {{ resto.isVisited ? 'Visited' : 'Not Visited' }}</p>
-            <button @click="markAsVisited(resto)">DONE</button>
-            <input type="number" v-model="resto.rating" placeholder="Rating" min="1" max="5">
-            <button @click="deleteResto(resto.id)">Delete</button>
+            <div class="flex">
+            <p class="mr-3">Rating: </p>
+            <input type="number" v-model="resto.rating" min="1" max="5" class="w-16">
+            <div>
+              <button @click="markAsVisited(resto)">DONE</button>
+              <button @click="deleteResto(resto.id)">Delete</button>
+            </div>
+          </div>
           </li>
         </ul>
-        <button @click="showNotVisited">Restos To Go</button>&nbsp;&nbsp;
-        <button @click="showVisited">Done</button>
       </div>
     </div>
   </div>
@@ -75,16 +89,17 @@ export default {
         });
     },
 
-    showNotVisited() {
-      this.showVisitedRestos = false;
-    },
-
-    showVisited() {
-      this.showVisitedRestos = true;
+    handleSelectChange(e) {
+      const selectedOption = e.target.value;
+      if (selectedOption === 'visited') {
+        this.showVisitedRestos = true;
+      } else if (selectedOption === 'notVisited') {
+        this.showVisitedRestos = false;
+      }
     },
 
     deleteResto(id) {
-      if(confirm('Are you sure you want to delete this restaurant?')) {
+      if (confirm('Are you sure you want to delete this restaurant?')) {
         api.deleteResto(id)
           .then(() => {
             this.fetchRestos();
