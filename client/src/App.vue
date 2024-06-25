@@ -5,7 +5,7 @@
       <!-- FORM TO ADD RESTOS -->
       <AddRestoForm />
 
-      <div class="bg-white mt-3 basis-2/3 max-h-[60vh] overflow-y-auto rounded-md">
+      <div class="mt-3 basis-2/3 overflow-y-auto rounded-md bg-neutral-100 xs:max-h-[50vh]">
         
         <div class="flex items-center justify-between mx-6 my-3">
           <h2 class="text-xl font-bold font-[tahoma]">
@@ -19,29 +19,33 @@
         <!------ List of VISITED Restos  ------>
         <ul v-if="showVisitedRestos">
           <li v-for="resto in visitedRestos" :key="resto.id" class="shadow-xl flex flex-col p-6 my-2 mx-6 rounded-lg">
-            <h2 class="font-bold">{{ resto.resto }}</h2>
+            <div class="md:flex justify-between">
+              <h2 class="font-bold text-xl">{{ resto.resto }}</h2>
+              <div class="">
+                <button @click="deleteResto(resto.id)"><font-awesome-icon icon="trash" class="text-2xl text-red-800 hover:scale-125 duration-150" /></button>
+              </div>
+            </div>
             <p>{{ resto.description }}</p>
             <p>Type: {{ resto.type }}</p>
             <p>Rating: {{ resto.rating }}</p>
-            <p>Status: {{ resto.isVisited ? 'Visited' : 'Not Visited' }}</p>
-            <button @click="deleteResto(resto.id)">Delete</button>
           </li>
         </ul>
         <!------ List of NOT Visited Restos  ------>
         <ul v-else>
           <li v-for="resto in notVisitedRestos" :key="resto.id" class="shadow-xl flex flex-col p-6 my-2 mx-6 rounded-lg">
-  
-            <h2 class="font-bold text-xl">{{ resto.resto }}</h2>
+            <div class="md:flex justify-between">
+              <h2 class="font-bold text-xl">{{ resto.resto }}</h2>
+              <div class="">
+                <button @click="markAsVisited(resto)"><font-awesome-icon icon="check" class="text-2xl text-[#0e1420] hover:scale-125 duration-150" /></button>
+                <button @click="deleteResto(resto.id)"><font-awesome-icon icon="trash" class="text-2xl text-red-800 hover:scale-125 duration-150 md:ml-5" /></button>
+              </div>
+            </div>
             <p>{{ resto.description }}</p>
             <p>Type: {{ resto.type }}</p>
-            <p>Status: {{ resto.isVisited ? 'Visited' : 'Not Visited' }}</p>
+        
             <div class="flex">
             <p class="mr-3">Rating: </p>
-            <input type="number" v-model="resto.rating" min="1" max="5" class="w-16">
-            <div>
-              <button @click="markAsVisited(resto)">DONE</button>
-              <button @click="deleteResto(resto.id)">Delete</button>
-            </div>
+            <input type="number" v-model="resto.rating" min="1" max="5" class="w-14 rounded-sm border-2">
           </div>
           </li>
         </ul>
